@@ -390,6 +390,89 @@
       color: var(--yellow);
     }
 
+    /* ── FLOW TIMELINE ───────────────────────────────── */
+    .flow { display: flex; flex-direction: column; }
+
+    .flow-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+    }
+
+    .flow-item:not(:last-child) .flow-line {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 24px;
+      bottom: -12px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .flow-dot-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .flow-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .flow-dot.gray  { background: var(--border); color: var(--gray-1); }
+    .flow-dot.green { background: #1a3a1a; border: 2px solid #4caf50; color: #4caf50; }
+    .flow-dot.red   { background: var(--red-dim); border: 2px solid var(--red-border); color: var(--red-text); }
+
+    .flow-connector {
+      width: 2px;
+      flex: 1;
+      min-height: 18px;
+      background: var(--border);
+      margin: 3px 0;
+    }
+
+    .flow-body {
+      padding-bottom: 18px;
+      flex: 1;
+    }
+
+    .flow-item:last-child .flow-body { padding-bottom: 0; }
+
+    .flow-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .flow-label.gray  { color: var(--gray-2); }
+    .flow-label.green { color: #4caf50; }
+    .flow-label.red   { color: var(--red-text); }
+
+    .flow-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+
+    .flow-desc {
+      font-size: 12px;
+      color: var(--gray-1);
+      line-height: 1.5;
+    }
+
     /* ── STEPS ────────────────────────────────────── */
     .steps { display: flex; flex-direction: column; gap: 10px; }
 
@@ -602,30 +685,49 @@
       <div class="card">
         <div class="card-top">
           <span class="card-icon">🎽</span>
-          <span class="card-title">Check-in en Sitio</span>
-          <span class="card-time">1:40 – 5:40 PM</span>
+          <span class="card-title">Check-in en Sitio · Doubles Mixed</span>
         </div>
-        <div class="info-list">
-          <div class="info-row">
-            <span class="info-label">División</span>
-            <span class="info-value"><strong>Doubles Mixed</strong></span>
+
+        <div class="flow">
+
+          <!-- Antes de 13:40 -->
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot gray">→</div>
+              <div class="flow-connector"></div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label gray">Antes de 13:40</div>
+              <div class="flow-title">Puedes entrar como espectador</div>
+              <div class="flow-desc">Ve al <strong>Spectators Desk</strong> con tu ticket y tu ID. No es el check-in oficial — solo acceso al recinto.</div>
+            </div>
           </div>
-          <div class="info-row">
-            <span class="info-label">Ventana</span>
-            <span class="info-value"><strong>13:40 – 17:40</strong></span>
+
+          <!-- Ventana oficial -->
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot green">✓</div>
+              <div class="flow-connector"></div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label green">13:40 — 17:40 · Tu ventana oficial</div>
+              <div class="flow-title">Check-in de atleta</div>
+              <div class="flow-desc">Ve al <strong>Athlete Check-In</strong>. Trae tu <strong>QR del ticket + ID</strong>. Aquí recibes tu pulsera de atleta — válida solo el sábado.</div>
+            </div>
           </div>
-          <div class="info-row">
-            <span class="info-label">Límite</span>
-            <span class="info-value">1 hora antes del arranque</span>
+
+          <!-- Límite -->
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot red">!</div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label red">Límite máximo</div>
+              <div class="flow-title">1 hora antes de tu ola de salida</div>
+              <div class="flow-desc">Si no haces check-in antes de este límite, <strong>no puedes competir</strong>. No registres a otros — cada atleta debe presentarse en persona.</div>
+            </div>
           </div>
-        </div>
-        <div class="banner yellow">
-          <span class="banner-icon">📲</span>
-          Trae tu QR del ticket + ID oficial
-        </div>
-        <div class="banner red">
-          <span class="banner-icon">⚠️</span>
-          No se permite registrar a otros. ID obligatorio.
+
         </div>
       </div>
 
