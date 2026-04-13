@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYROX Monterrey 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:          #080808;
+      --surface:     #111111;
+      --card:        #161616;
+      --card-hover:  #1d1d1d;
+      --yellow:      #FFE600;
+      --yellow-glow: rgba(255, 230, 0, 0.12);
+      --yellow-dim:  rgba(255, 230, 0, 0.08);
+      --yellow-border: rgba(255, 230, 0, 0.25);
+      --red-dim:     rgba(255, 80, 80, 0.08);
+      --red-border:  rgba(255, 80, 80, 0.3);
+      --red-text:    #ff7070;
+      --white:       #FFFFFF;
+      --gray-1:      #aaaaaa;
+      --gray-2:      #666666;
+      --border:      #222222;
+      --radius-sm:   10px;
+      --radius:      16px;
+      --radius-lg:   20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 90px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HERO ─────────────────────────────────────── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 52px 20px 36px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle at center, rgba(255,230,0,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--yellow);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(56px, 18vw, 80px);
+      font-weight: 900;
+      letter-spacing: -3px;
+      line-height: 0.9;
+      color: var(--white);
+    }
+
+    .hero h1 .accent { color: var(--yellow); }
+
+    .hero-city {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray-2);
+    }
+
+    .hero-dates {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--gray-1);
+      font-weight: 500;
+    }
+
+    .athletes {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .athlete-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 7px 14px 7px 8px;
+    }
+
+    .athlete-pill-avatar {
+      width: 28px; height: 28px;
+      background: var(--yellow);
+      border-radius: 50%;
+      color: #000;
+      font-size: 12px;
+      font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .athlete-pill-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    /* ── BOTTOM NAV ───────────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 200;
+    }
+
+    .nav-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 4px 14px;
+      text-decoration: none;
+      color: var(--gray-2);
+      gap: 4px;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-tab.active, .nav-tab:hover { color: var(--yellow); }
+
+    .nav-tab-icon { font-size: 22px; line-height: 1; }
+
+    .nav-tab-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ───────────────────────────────────── */
+    .content {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* ── SECTIONS ─────────────────────────────────── */
+    .section {
+      padding-top: 28px;
+      scroll-margin-top: 16px;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .day-badge {
+      background: var(--yellow);
+      color: #000;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .day-badge.muted {
+      background: var(--card);
+      color: var(--gray-1);
+      border: 1px solid var(--border);
+    }
+
+    .day-title {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .day-sub {
+      font-size: 12px;
+      color: var(--gray-2);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    /* ── CARDS ────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: background 0.2s, border-color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .card.yellow-edge {
+      border-color: var(--yellow-border);
+      background: linear-gradient(140deg, #161600, #161616);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      flex: 1;
+    }
+
+    .card-time {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--yellow);
+      white-space: nowrap;
+    }
+
+    /* ── INFO ROWS ────────────────────────────────── */
+    .info-list { display: flex; flex-direction: column; gap: 0; }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-row:first-child { padding-top: 0; }
+
+    .info-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--gray-2);
+      min-width: 72px;
+      padding-top: 2px;
+    }
+
+    .info-value {
+      color: var(--gray-1);
+      font-weight: 500;
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .info-value strong { color: var(--white); font-weight: 700; }
+
+    /* ── BANNERS ──────────────────────────────────── */
+    .banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .banner.yellow {
+      background: var(--yellow-dim);
+      border: 1px solid var(--yellow-border);
+      color: var(--yellow);
+    }
+
+    .banner.red {
+      background: var(--red-dim);
+      border: 1px solid var(--red-border);
+      color: var(--red-text);
+    }
+
+    .banner-icon { flex-shrink: 0; font-size: 14px; margin-top: 0; }
+
+    /* ── MAP BUTTON ───────────────────────────────── */
+    .map-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: var(--yellow-dim);
+      border: 1px solid var(--yellow-border);
+      border-radius: var(--radius-sm);
+      color: var(--yellow);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+
+    .map-btn:hover { background: rgba(255, 230, 0, 0.16); }
+
+    /* ── ATHLETE ROWS ─────────────────────────────── */
+    .athlete-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .athlete-row:last-child { margin-bottom: 0; }
+
+    .athlete-avatar {
+      width: 40px; height: 40px;
+      background: var(--yellow);
+      border-radius: 50%;
+      color: #000;
+      font-size: 15px;
+      font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .athlete-info { flex: 1; }
+
+    .athlete-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .athlete-detail {
+      font-size: 11px;
+      color: var(--gray-2);
+      margin-top: 2px;
+    }
+
+    .athlete-big-time {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    /* ── STEPS ────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-num {
+      width: 24px; height: 24px;
+      background: var(--yellow);
+      color: #000;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-body {
+      font-size: 13px;
+      color: var(--gray-1);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .step-body strong { color: var(--white); }
+
+    /* ── RACE MAP IMAGE ───────────────────────────── */
+    .race-map {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    /* ── SECTION DIVIDER ──────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0 0;
+    }
+
+    /* ── FADE IN ──────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero { animation: fadeUp 0.5s ease both; }
+    .section { animation: fadeUp 0.5s ease both; }
+    .section:nth-child(2) { animation-delay: 0.05s; }
+    .section:nth-child(3) { animation-delay: 0.10s; }
+    .section:nth-child(4) { animation-delay: 0.15s; }
+
+    /* ── RESPONSIVE TWEAKS ────────────────────────── */
+    @media (max-width: 360px) {
+      .hero h1 { font-size: 52px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HERO ───────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-eyebrow">Weekend Guide 🏋️</div>
+    <h1>HY<span class="accent">ROX</span></h1>
+    <div class="hero-city">Monterrey · México</div>
+    <div class="hero-dates">Viernes 17 — Sábado 18 de Abril, 2026</div>
+    <div class="athletes">
+      <div class="athlete-pill">
+        <div class="athlete-pill-avatar">X</div>
+        <span class="athlete-pill-name">Ximena</span>
+      </div>
+      <div class="athlete-pill">
+        <div class="athlete-pill-avatar">H</div>
+        <span class="athlete-pill-name">Herson</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── CONTENT ────────────────────────────────── -->
+  <main class="content">
+
+    <!-- ════ VIERNES 17 ════════════════════════════ -->
+    <section class="section" id="viernes">
+      <div class="day-header">
+        <div class="day-badge">Vie 17 Abr</div>
+        <div>
+          <div class="day-title">Día de Llegada ✈️</div>
+          <div class="day-sub">Registro anticipado · Check-in Airbnb</div>
+        </div>
+      </div>
+
+      <!-- Llegadas -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🛬</span>
+          <span class="card-title">Llegadas al Aeropuerto</span>
+        </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">X</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Ximena</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">11:30 AM</div>
+        </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">H</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Herson</div>
+            <div class="athlete-detail">Terminal B</div>
+          </div>
+          <div class="athlete-big-time">11:32 AM</div>
+        </div>
+      </div>
+
+      <!-- Registro Anticipado -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">📋</span>
+          <span class="card-title">Registro Anticipado de Atletas</span>
+          <span class="card-time">11 AM – 5 PM</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Solo para</span>
+            <span class="info-value"><strong>Atletas que compitan el sábado</strong></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Lugar</span>
+            <span class="info-value">Tienda Puma · Galerías Monterrey</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Dirección</span>
+            <span class="info-value">Av Insurgentes 2500, Vista Hermosa, 64620 Monterrey, N.L.</span>
+          </div>
+        </div>
+        <div class="banner red">
+          <span class="banner-icon">⏰</span>
+          Cierra a las 5:00 PM en punto — sin excepciones
+        </div>
+        <div class="banner yellow">
+          <span class="banner-icon">📌</span>
+          Trae tu ID. No se permite el registro a nombre de otros.
+        </div>
+      </div>
+
+      <!-- Airbnb -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🏠</span>
+          <span class="card-title">Check-in Airbnb</span>
+          <span class="card-time">3:00 PM</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Dirección</span>
+            <span class="info-value">Av Francisco I. Madero 2523, Monterrey, N.L. 64580</span>
+          </div>
+        </div>
+        <a href="https://share.google/C7U3Oshs7pfpHgeAA" class="map-btn" target="_blank">
+          <span>📍</span> Ver en Google Maps
+        </a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════ SÁBADO 18 ═════════════════════════════ -->
+    <section class="section" id="sabado">
+      <div class="day-header">
+        <div class="day-badge">Sáb 18 Abr</div>
+        <div>
+          <div class="day-title">Race Day 🏁</div>
+          <div class="day-sub">DOUBLES MIXED · Cintermex</div>
+        </div>
+      </div>
+
+      <!-- Check-in en Sitio -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🎽</span>
+          <span class="card-title">Check-in en Sitio</span>
+          <span class="card-time">1:40 – 5:40 PM</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">División</span>
+            <span class="info-value"><strong>Doubles Mixed</strong></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Ventana</span>
+            <span class="info-value"><strong>13:40 – 17:40</strong></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Límite</span>
+            <span class="info-value">1 hora antes del arranque</span>
+          </div>
+        </div>
+        <div class="banner yellow">
+          <span class="banner-icon">📲</span>
+          Trae tu QR del ticket + ID oficial
+        </div>
+        <div class="banner red">
+          <span class="banner-icon">⚠️</span>
+          No se permite registrar a otros. ID obligatorio.
+        </div>
+      </div>
+
+      <!-- Instrucciones de Carrera -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🏃</span>
+          <span class="card-title">Instrucciones de Carrera</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <strong>KM 1 —</strong> Entra <strong>la TERCERA</strong> vez que veas el arco "IN"
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <strong>KM 2 al 8 —</strong> Entra <strong>la SEGUNDA</strong> vez que veas el arco "IN"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Briefing Relay -->
+      <div class="card yellow-edge">
+        <div class="card-top">
+          <span class="card-icon">📢</span>
+          <span class="card-title">Briefing Obligatorio del Relay</span>
+          <span class="card-time">7:00 PM</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Lugar</span>
+            <span class="info-value">Relay Transition Zone · Cintermex</span>
+          </div>
+        </div>
+        <div class="banner yellow">
+          <span class="banner-icon">⚡</span>
+          Al menos 1 integrante del equipo <strong>debe</strong> asistir — es obligatorio
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════ VENUE ══════════════════════════════════ -->
+    <section class="section" id="venue">
+      <div class="day-header">
+        <div class="day-badge muted">Venue</div>
+        <div>
+          <div class="day-title">Cintermex 📍</div>
+          <div class="day-sub">Salas A–D · 18 / 19 de Abril</div>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🏟️</span>
+          <span class="card-title">Dirección del Evento</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Recinto</span>
+            <span class="info-value"><strong>Cintermex</strong> · Salas A–D</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Dirección</span>
+            <span class="info-value">Av Fundidora 501, Obrera, 64010 Monterrey, N.L.</span>
+          </div>
+        </div>
+        <a href="https://maps.app.goo.gl/dJb73xKp9n5FspBR9" class="map-btn" target="_blank">
+          <span>📍</span> Ver en Google Maps
+        </a>
+      </div>
+
+      <!-- Mapa de Carrera -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🗺️</span>
+          <span class="card-title">Mapa de Carrera</span>
+        </div>
+        <div style="font-size: 11px; color: var(--gray-2); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px;">
+          HYROX Monterrey · Cintermex · 18–19 / 04 / 26
+        </div>
+        <img
+          src="race-map.jpeg"
+          alt="Mapa de Carrera HYROX Monterrey Cintermex"
+          class="race-map"
+          loading="lazy"
+        >
+      </div>
+    </section>
+
+    <div style="height: 24px;"></div>
+
+  </main>
+
+  <!-- ─── BOTTOM NAV ──────────────────────────────── -->
+  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+    <a href="#viernes" class="nav-tab" id="nav-viernes">
+      <span class="nav-tab-icon">✈️</span>
+      <span class="nav-tab-label">Viernes</span>
+    </a>
+    <a href="#sabado" class="nav-tab" id="nav-sabado">
+      <span class="nav-tab-icon">🏁</span>
+      <span class="nav-tab-label">Carrera</span>
+    </a>
+    <a href="#venue" class="nav-tab" id="nav-venue">
+      <span class="nav-tab-icon">📍</span>
+      <span class="nav-tab-label">Venue</span>
+    </a>
+  </nav>
+
+  <script>
+    // ── Active nav highlight on scroll ───────────────
+    const sections = [
+      { id: 'viernes', nav: 'nav-viernes' },
+      { id: 'sabado',  nav: 'nav-sabado'  },
+      { id: 'venue',   nav: 'nav-venue'   },
+    ];
+
+    const navEls = Object.fromEntries(
+      sections.map(s => [s.nav, document.getElementById(s.nav)])
+    );
+
+    const setActive = (navId) => {
+      sections.forEach(s => navEls[s.nav].classList.remove('active'));
+      if (navId && navEls[navId]) navEls[navId].classList.add('active');
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const match = sections.find(s => s.id === entry.target.id);
+          if (match) setActive(match.nav);
+        }
+      });
+    }, { rootMargin: '0px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+
+    // Set first active on load
+    setActive('nav-viernes');
+  </script>
+
+</body>
+</html>
