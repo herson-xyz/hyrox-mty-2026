@@ -473,6 +473,87 @@
       line-height: 1.5;
     }
 
+    /* ── DONE BANNER ─────────────────────────────── */
+    .done-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #0d2e0d, #0a1f0a);
+      border: 1px solid #2a5c2a;
+      border-radius: var(--radius-sm);
+      padding: 14px 14px;
+      margin-bottom: 10px;
+    }
+
+    .done-check {
+      width: 36px; height: 36px;
+      background: #4caf50;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .done-text-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4caf50;
+    }
+
+    .done-text-sub {
+      font-size: 12px;
+      color: #6dbf6d;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* ── COLLAPSIBLE ──────────────────────────────── */
+    details { margin-bottom: 10px; }
+
+    details summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-1);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    details summary::-webkit-details-marker { display: none; }
+
+    details summary::after {
+      content: '›';
+      margin-left: auto;
+      font-size: 16px;
+      color: var(--gray-2);
+      transition: transform 0.2s;
+    }
+
+    details[open] summary {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-color: transparent;
+    }
+
+    details[open] summary::after { transform: rotate(90deg); }
+
+    .details-body {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-bottom-left-radius: var(--radius-sm);
+      border-bottom-right-radius: var(--radius-sm);
+      padding: 14px;
+    }
+
     /* ── STEPS ────────────────────────────────────── */
     .steps { display: flex; flex-direction: column; gap: 10px; }
 
@@ -563,6 +644,10 @@
         <div class="athlete-pill-avatar">H</div>
         <span class="athlete-pill-name">Herson</span>
       </div>
+      <div class="athlete-pill">
+        <div class="athlete-pill-avatar">M</div>
+        <span class="athlete-pill-name">Monse</span>
+      </div>
     </div>
   </header>
 
@@ -617,23 +702,30 @@
           </div>
           <div class="athlete-big-time">11:32 AM</div>
         </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">M</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Monse</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">2:55 PM</div>
+        </div>
       </div>
 
-      <!-- Registro Anticipado -->
-      <div class="card">
+      <!-- Registro Early Bird -->
+      <div class="card yellow-edge">
         <div class="card-top">
-          <span class="card-icon">📋</span>
-          <span class="card-title">Registro Early Bird</span>
+          <span class="card-icon">⭐</span>
+          <span class="card-title">Registro Early Bird · El Plan</span>
           <span class="card-time">11 AM – 5 PM</span>
+        </div>
+        <div class="flow-desc" style="font-size: 13px; color: var(--gray-1); margin-bottom: 12px; line-height: 1.6;">
+          Este es nuestro check-in. Vamos hoy viernes a la tienda Puma, recogemos la pulsera de atleta, y listo — <strong style="color: var(--white);">el sábado solo llegamos a correr.</strong> Sin filas, sin estrés de tiempo.
         </div>
         <div class="info-list">
           <div class="info-row">
-            <span class="info-label">Solo para</span>
-            <span class="info-value"><strong>Atletas que compitan el sábado</strong></span>
-          </div>
-          <div class="info-row">
             <span class="info-label">Lugar</span>
-            <span class="info-value">Tienda Puma · Galerías Monterrey</span>
+            <span class="info-value"><strong>Tienda Puma · Galerías Monterrey</strong></span>
           </div>
           <div class="info-row">
             <span class="info-label">Dirección</span>
@@ -681,53 +773,12 @@
         </div>
       </div>
 
-      <!-- Check-in en Sitio -->
-      <div class="card">
-        <div class="card-top">
-          <span class="card-icon">🎽</span>
-          <span class="card-title">Check-in en Sitio · Doubles Mixed</span>
-        </div>
-
-        <div class="flow">
-
-          <!-- Antes de 13:40 -->
-          <div class="flow-item">
-            <div class="flow-dot-wrap">
-              <div class="flow-dot gray">→</div>
-              <div class="flow-connector"></div>
-            </div>
-            <div class="flow-body">
-              <div class="flow-label gray">Antes de 13:40</div>
-              <div class="flow-title">Puedes entrar como espectador</div>
-              <div class="flow-desc">Ve al <strong>Spectators Desk</strong> con tu ticket y tu ID. No es el check-in oficial — solo acceso al recinto.</div>
-            </div>
-          </div>
-
-          <!-- Ventana oficial -->
-          <div class="flow-item">
-            <div class="flow-dot-wrap">
-              <div class="flow-dot green">✓</div>
-              <div class="flow-connector"></div>
-            </div>
-            <div class="flow-body">
-              <div class="flow-label green">13:40 — 17:40 · Tu ventana oficial</div>
-              <div class="flow-title">Check-in de atleta</div>
-              <div class="flow-desc">Ve al <strong>Athlete Check-In</strong>. Trae tu <strong>QR del ticket + ID</strong>. Aquí recibes tu pulsera de atleta — válida solo el sábado.</div>
-            </div>
-          </div>
-
-          <!-- Límite -->
-          <div class="flow-item">
-            <div class="flow-dot-wrap">
-              <div class="flow-dot red">!</div>
-            </div>
-            <div class="flow-body">
-              <div class="flow-label red">Límite máximo</div>
-              <div class="flow-title">1 hora antes de tu ola de salida</div>
-              <div class="flow-desc">Si no haces check-in antes de este límite, <strong>no puedes competir</strong>. No registres a otros — cada atleta debe presentarse en persona.</div>
-            </div>
-          </div>
-
+      <!-- Ya checkeaste -->
+      <div class="done-banner">
+        <div class="done-check">✓</div>
+        <div>
+          <div class="done-text-title">Ya tienes tu pulsera de atleta</div>
+          <div class="done-text-sub">Hiciste check-in el viernes — el sábado solo llegas y corres. Sin filas, sin ventanas, sin estrés.</div>
         </div>
       </div>
 
@@ -771,6 +822,52 @@
           Al menos 1 integrante del equipo <strong>debe</strong> asistir — es obligatorio
         </div>
       </div>
+
+      <!-- Fallback: no pudiste el viernes -->
+      <details>
+        <summary>🆘 ¿No pudiste hacer check-in el viernes?</summary>
+        <div class="details-body">
+          <div class="flow">
+
+            <div class="flow-item">
+              <div class="flow-dot-wrap">
+                <div class="flow-dot gray">→</div>
+                <div class="flow-connector"></div>
+              </div>
+              <div class="flow-body">
+                <div class="flow-label gray">Antes de 13:40</div>
+                <div class="flow-title">Puedes entrar como espectador</div>
+                <div class="flow-desc">Ve al <strong>Spectators Desk</strong> con tu ticket e ID. Solo es acceso al recinto, no es check-in oficial.</div>
+              </div>
+            </div>
+
+            <div class="flow-item">
+              <div class="flow-dot-wrap">
+                <div class="flow-dot green">✓</div>
+                <div class="flow-connector"></div>
+              </div>
+              <div class="flow-body">
+                <div class="flow-label green">13:40 — 17:40 · Ventana de check-in</div>
+                <div class="flow-title">Check-in en sitio · Doubles Mixed</div>
+                <div class="flow-desc">Ve al <strong>Athlete Check-In</strong> con tu <strong>QR del ticket + ID</strong>. Aquí recibes la pulsera. Cada atleta debe presentarse en persona.</div>
+              </div>
+            </div>
+
+            <div class="flow-item">
+              <div class="flow-dot-wrap">
+                <div class="flow-dot red">!</div>
+              </div>
+              <div class="flow-body">
+                <div class="flow-label red">Límite máximo</div>
+                <div class="flow-title">1 hora antes de tu ola de salida</div>
+                <div class="flow-desc">Después de este límite, <strong>no puedes competir</strong>.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </details>
+
     </section>
 
     <div class="divider"></div>
@@ -824,6 +921,42 @@
       </div>
     </section>
 
+    <div class="divider"></div>
+
+    <!-- ════ DOMINGO 19 ════════════════════════════ -->
+    <section class="section" id="domingo">
+      <div class="day-header">
+        <div class="day-badge muted">Dom 19 Abr</div>
+        <div>
+          <div class="day-title">Regreso a Casa 🏠</div>
+          <div class="day-sub">Vuelos de regreso</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🛫</span>
+          <span class="card-title">Salidas del Aeropuerto</span>
+        </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">M</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Monse</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">11:05 AM</div>
+        </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">H</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Herson</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">12:56 PM</div>
+        </div>
+      </div>
+    </section>
+
     <div style="height: 24px;"></div>
 
   </main>
@@ -842,6 +975,10 @@
       <span class="nav-tab-icon">📍</span>
       <span class="nav-tab-label">Venue</span>
     </a>
+    <a href="#domingo" class="nav-tab" id="nav-domingo">
+      <span class="nav-tab-icon">🛫</span>
+      <span class="nav-tab-label">Domingo</span>
+    </a>
   </nav>
 
   <script>
@@ -850,6 +987,7 @@
       { id: 'viernes', nav: 'nav-viernes' },
       { id: 'sabado',  nav: 'nav-sabado'  },
       { id: 'venue',   nav: 'nav-venue'   },
+      { id: 'domingo', nav: 'nav-domingo' },
     ];
 
     const navEls = Object.fromEntries(
