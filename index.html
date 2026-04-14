@@ -740,6 +740,9 @@
           <span class="banner-icon">📌</span>
           Trae tu ID. No se permite el registro a nombre de otros.
         </div>
+        <a href="https://maps.app.goo.gl/GXkcVrBiq9e5bWGP6?g_st=ic" class="map-btn" target="_blank">
+          <span>📍</span> Ver en Google Maps · Tienda Puma
+        </a>
       </div>
 
       <!-- Airbnb -->
@@ -773,34 +776,46 @@
         </div>
       </div>
 
+      <!-- Venue -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🏟️</span>
+          <span class="card-title">Cintermex · Salas A–D</span>
+        </div>
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-label">Dirección</span>
+            <span class="info-value">Av Fundidora 501, Obrera, 64010 Monterrey, N.L.</span>
+          </div>
+        </div>
+        <a href="https://maps.app.goo.gl/dJb73xKp9n5FspBR9" class="map-btn" target="_blank">
+          <span>📍</span> Ver en Google Maps · Cintermex
+        </a>
+      </div>
+
+      <!-- Mapa de Carrera -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🗺️</span>
+          <span class="card-title">Mapa de Carrera</span>
+        </div>
+        <div style="font-size: 11px; color: var(--gray-2); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px;">
+          HYROX Monterrey · Cintermex · 18–19 / 04 / 26
+        </div>
+        <img
+          src="race-map.jpeg"
+          alt="Mapa de Carrera HYROX Monterrey Cintermex"
+          class="race-map"
+          loading="lazy"
+        >
+      </div>
+
       <!-- Ya checkeaste -->
       <div class="done-banner">
         <div class="done-check">✓</div>
         <div>
           <div class="done-text-title">Ya tienes tu pulsera de atleta</div>
           <div class="done-text-sub">Hiciste check-in el viernes — el sábado solo llegas y corres. Sin filas, sin ventanas, sin estrés.</div>
-        </div>
-      </div>
-
-      <!-- Instrucciones de Carrera -->
-      <div class="card">
-        <div class="card-top">
-          <span class="card-icon">🏃</span>
-          <span class="card-title">Instrucciones de Carrera</span>
-        </div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-body">
-              <strong>KM 1 —</strong> Entra <strong>la TERCERA</strong> vez que veas el arco "IN"
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-body">
-              <strong>KM 2 al 8 —</strong> Entra <strong>la SEGUNDA</strong> vez que veas el arco "IN"
-            </div>
-          </div>
         </div>
       </div>
 
@@ -853,57 +868,6 @@
 
     <div class="divider"></div>
 
-    <!-- ════ VENUE ══════════════════════════════════ -->
-    <section class="section" id="venue">
-      <div class="day-header">
-        <div class="day-badge muted">Venue</div>
-        <div>
-          <div class="day-title">Cintermex 📍</div>
-          <div class="day-sub">Salas A–D · 18 / 19 de Abril</div>
-        </div>
-      </div>
-
-      <!-- Dirección -->
-      <div class="card">
-        <div class="card-top">
-          <span class="card-icon">🏟️</span>
-          <span class="card-title">Dirección del Evento</span>
-        </div>
-        <div class="info-list">
-          <div class="info-row">
-            <span class="info-label">Recinto</span>
-            <span class="info-value"><strong>Cintermex</strong> · Salas A–D</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Dirección</span>
-            <span class="info-value">Av Fundidora 501, Obrera, 64010 Monterrey, N.L.</span>
-          </div>
-        </div>
-        <a href="https://maps.app.goo.gl/dJb73xKp9n5FspBR9" class="map-btn" target="_blank">
-          <span>📍</span> Ver en Google Maps
-        </a>
-      </div>
-
-      <!-- Mapa de Carrera -->
-      <div class="card">
-        <div class="card-top">
-          <span class="card-icon">🗺️</span>
-          <span class="card-title">Mapa de Carrera</span>
-        </div>
-        <div style="font-size: 11px; color: var(--gray-2); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px;">
-          HYROX Monterrey · Cintermex · 18–19 / 04 / 26
-        </div>
-        <img
-          src="race-map.jpeg"
-          alt="Mapa de Carrera HYROX Monterrey Cintermex"
-          class="race-map"
-          loading="lazy"
-        >
-      </div>
-    </section>
-
-    <div class="divider"></div>
-
     <!-- ════ DOMINGO 19 ════════════════════════════ -->
     <section class="section" id="domingo">
       <div class="day-header">
@@ -952,10 +916,6 @@
       <span class="nav-tab-icon">🏁</span>
       <span class="nav-tab-label">Carrera</span>
     </a>
-    <a href="#venue" class="nav-tab" id="nav-venue">
-      <span class="nav-tab-icon">📍</span>
-      <span class="nav-tab-label">Venue</span>
-    </a>
     <a href="#domingo" class="nav-tab" id="nav-domingo">
       <span class="nav-tab-icon">🛫</span>
       <span class="nav-tab-label">Domingo</span>
@@ -967,7 +927,6 @@
     const sections = [
       { id: 'viernes', nav: 'nav-viernes' },
       { id: 'sabado',  nav: 'nav-sabado'  },
-      { id: 'venue',   nav: 'nav-venue'   },
       { id: 'domingo', nav: 'nav-domingo' },
     ];
 
