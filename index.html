@@ -682,6 +682,10 @@
         <div class="athlete-pill-avatar">M</div>
         <span class="athlete-pill-name">Monse</span>
       </div>
+      <div class="athlete-pill">
+        <div class="athlete-pill-avatar">R</div>
+        <span class="athlete-pill-name">Ryan</span>
+      </div>
     </div>
   </header>
 
@@ -694,7 +698,7 @@
         <div class="day-badge">Vie 17 Abr</div>
         <div>
           <div class="day-title">Día de Llegada ✈️</div>
-          <div class="day-sub">Registro anticipado · Check-in Airbnb</div>
+          <div class="day-sub">Check-in en sitio el sábado · Check-in Airbnb</div>
         </div>
       </div>
 
@@ -744,40 +748,46 @@
           </div>
           <div class="athlete-big-time">2:55 PM</div>
         </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">R</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Ryan</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">2:55 PM</div>
+        </div>
       </div>
 
-      <!-- Registro Early Bird -->
-      <div class="card yellow-edge">
-        <div class="card-top">
-          <span class="card-icon">⭐</span>
-          <span class="card-title">Registro Early Bird · El Plan</span>
-          <span class="card-time">11 AM – 5 PM</span>
-        </div>
-        <div class="flow-desc" style="font-size: 13px; color: var(--gray-1); margin-bottom: 12px; line-height: 1.6;">
-          Este es nuestro check-in. Vamos hoy viernes a la tienda Puma, recogemos la pulsera de atleta, y listo — <strong style="color: var(--white);">el sábado solo llegamos a correr.</strong> Sin filas, sin estrés de tiempo.
-        </div>
-        <div class="info-list">
-          <div class="info-row">
-            <span class="info-label">Lugar</span>
-            <span class="info-value"><strong>Tienda Puma · Galerías Monterrey</strong></span>
+      <!-- Registro Early Bird (colapsado) -->
+      <details>
+        <summary>⭐ Registro Early Bird · Viernes en tienda Puma (11 AM – 5 PM)</summary>
+        <div class="details-body">
+          <div class="flow-desc" style="font-size: 13px; color: var(--gray-1); margin-bottom: 12px; line-height: 1.6;">
+            Opción alternativa: ir el viernes a la tienda Puma, recoger la pulsera de atleta, y el sábado solo llegar a correr. Sin filas, sin estrés de tiempo.
           </div>
-          <div class="info-row">
-            <span class="info-label">Dirección</span>
-            <span class="info-value">Av Insurgentes 2500, Vista Hermosa, 64620 Monterrey, N.L.</span>
+          <div class="info-list">
+            <div class="info-row">
+              <span class="info-label">Lugar</span>
+              <span class="info-value"><strong>Tienda Puma · Galerías Monterrey</strong></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Dirección</span>
+              <span class="info-value">Av Insurgentes 2500, Vista Hermosa, 64620 Monterrey, N.L.</span>
+            </div>
           </div>
+          <div class="banner red">
+            <span class="banner-icon">⏰</span>
+            Cierra a las 5:00 PM en punto — sin excepciones
+          </div>
+          <div class="banner yellow">
+            <span class="banner-icon">📌</span>
+            Trae tu ID. No se permite el registro a nombre de otros.
+          </div>
+          <a href="https://maps.app.goo.gl/GXkcVrBiq9e5bWGP6?g_st=ic" class="map-btn" target="_blank">
+            <span>📍</span> Ver en Google Maps · Tienda Puma
+          </a>
         </div>
-        <div class="banner red">
-          <span class="banner-icon">⏰</span>
-          Cierra a las 5:00 PM en punto — sin excepciones
-        </div>
-        <div class="banner yellow">
-          <span class="banner-icon">📌</span>
-          Trae tu ID. No se permite el registro a nombre de otros.
-        </div>
-        <a href="https://maps.app.goo.gl/GXkcVrBiq9e5bWGP6?g_st=ic" class="map-btn" target="_blank">
-          <span>📍</span> Ver en Google Maps · Tienda Puma
-        </a>
-      </div>
+      </details>
 
       <!-- Airbnb -->
       <div class="card">
@@ -827,59 +837,59 @@
         </a>
       </div>
 
-      <!-- Ya checkeaste -->
-      <div class="done-banner">
-        <div class="done-check">✓</div>
-        <div>
-          <div class="done-text-title">Ya tienes tu pulsera de atleta</div>
-          <div class="done-text-sub">Hiciste check-in el viernes — el sábado solo llegas y corres. Sin filas, sin ventanas, sin estrés.</div>
+      <!-- Check-in en Sitio -->
+      <div class="card yellow-edge">
+        <div class="card-top">
+          <span class="card-icon">📋</span>
+          <span class="card-title">Check-in en Sitio · El Plan</span>
+          <span class="card-time">Sáb 18 Abr</span>
+        </div>
+        <div class="flow-desc" style="font-size: 13px; color: var(--gray-1); margin-bottom: 12px; line-height: 1.6;">
+          Hacemos el check-in el sábado directamente en Cintermex. <strong style="color: var(--white);">Cada atleta debe presentarse en persona con su ID y QR del ticket.</strong>
+        </div>
+        <div class="flow">
+
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot gray">→</div>
+              <div class="flow-connector"></div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label gray">Antes de 13:40</div>
+              <div class="flow-title">Puedes entrar como espectador</div>
+              <div class="flow-desc">Ve al <strong>Spectators Desk</strong> con tu ticket e ID. Solo es acceso al recinto, no es check-in oficial.</div>
+            </div>
+          </div>
+
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot green">✓</div>
+              <div class="flow-connector"></div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label green">13:40 — 17:40 · Ventana de check-in</div>
+              <div class="flow-title">Check-in en sitio · Doubles Mixed</div>
+              <div class="flow-desc">Ve al <strong>Athlete Check-In</strong> con tu <strong>QR del ticket + ID</strong>. Aquí recibes la pulsera. Cada atleta debe presentarse en persona.</div>
+            </div>
+          </div>
+
+          <div class="flow-item">
+            <div class="flow-dot-wrap">
+              <div class="flow-dot red">!</div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-label red">Límite máximo</div>
+              <div class="flow-title">1 hora antes de tu ola de salida</div>
+              <div class="flow-desc">Después de este límite, <strong>no puedes competir</strong>.</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="banner yellow">
+          <span class="banner-icon">📌</span>
+          Trae tu ID y el QR del ticket. No se puede hacer check-in a nombre de otro atleta.
         </div>
       </div>
-
-      <!-- Fallback: no pudiste el viernes -->
-      <details>
-        <summary>🆘 ¿No pudiste hacer check-in el viernes?</summary>
-        <div class="details-body">
-          <div class="flow">
-
-            <div class="flow-item">
-              <div class="flow-dot-wrap">
-                <div class="flow-dot gray">→</div>
-                <div class="flow-connector"></div>
-              </div>
-              <div class="flow-body">
-                <div class="flow-label gray">Antes de 13:40</div>
-                <div class="flow-title">Puedes entrar como espectador</div>
-                <div class="flow-desc">Ve al <strong>Spectators Desk</strong> con tu ticket e ID. Solo es acceso al recinto, no es check-in oficial.</div>
-              </div>
-            </div>
-
-            <div class="flow-item">
-              <div class="flow-dot-wrap">
-                <div class="flow-dot green">✓</div>
-                <div class="flow-connector"></div>
-              </div>
-              <div class="flow-body">
-                <div class="flow-label green">13:40 — 17:40 · Ventana de check-in</div>
-                <div class="flow-title">Check-in en sitio · Doubles Mixed</div>
-                <div class="flow-desc">Ve al <strong>Athlete Check-In</strong> con tu <strong>QR del ticket + ID</strong>. Aquí recibes la pulsera. Cada atleta debe presentarse en persona.</div>
-              </div>
-            </div>
-
-            <div class="flow-item">
-              <div class="flow-dot-wrap">
-                <div class="flow-dot red">!</div>
-              </div>
-              <div class="flow-body">
-                <div class="flow-label red">Límite máximo</div>
-                <div class="flow-title">1 hora antes de tu ola de salida</div>
-                <div class="flow-desc">Después de este límite, <strong>no puedes competir</strong>.</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </details>
 
       <!-- Mapa de Carrera -->
       <div class="card">
@@ -949,12 +959,28 @@
           <div class="athlete-big-time">11:05 AM</div>
         </div>
         <div class="athlete-row">
+          <div class="athlete-avatar">R</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Ryan</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">11:05 AM</div>
+        </div>
+        <div class="athlete-row">
           <div class="athlete-avatar">H</div>
           <div class="athlete-info">
             <div class="athlete-name">Herson</div>
             <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
           </div>
           <div class="athlete-big-time">12:56 PM</div>
+        </div>
+        <div class="athlete-row">
+          <div class="athlete-avatar">X</div>
+          <div class="athlete-info">
+            <div class="athlete-name">Ximena</div>
+            <div class="athlete-detail">Aeropuerto Internacional de Monterrey</div>
+          </div>
+          <div class="athlete-big-time">6:25 PM</div>
         </div>
       </div>
     </section>
