@@ -593,6 +593,40 @@
       display: block;
     }
 
+    /* ── LAP ANIMATION ───────────────────────────── */
+    .lap-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .lap-tab {
+      flex: 1;
+      padding: 9px 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--gray-1);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', -apple-system, sans-serif;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .lap-tab.active {
+      background: var(--yellow);
+      color: #000;
+      border-color: var(--yellow);
+    }
+
+    #lapCanvas {
+      width: 100%;
+      display: block;
+      border-radius: var(--radius-sm);
+    }
+
     /* ── SECTION DIVIDER ──────────────────────────── */
     .divider {
       height: 1px;
@@ -871,6 +905,22 @@
         >
       </div>
 
+      <!-- Lap Animation -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">▶️</span>
+          <span class="card-title">Simulación del circuito completo</span>
+        </div>
+        <div class="lap-tabs">
+          <button class="lap-tab active" id="lapTab1" onclick="lapAnim.setMode(1)">KM 1</button>
+          <button class="lap-tab" id="lapTab2" onclick="lapAnim.setMode(2)">KM 2-8</button>
+        </div>
+        <canvas id="lapCanvas"></canvas>
+        <div style="font-size: 10px; color: var(--gray-2); text-align: center; margin-top: 6px; letter-spacing: 0.5px;">
+          DIAGRAMA ESQUEMÁTICO · No a escala
+        </div>
+      </div>
+
     </section>
 
     <div class="divider"></div>
@@ -930,7 +980,7 @@
   </nav>
 
   <script>
-    // ── Active nav highlight on scroll ───────────────
+    // ── Active nav highlight on scroll ──────────────
     const sections = [
       { id: 'viernes', nav: 'nav-viernes' },
       { id: 'sabado',  nav: 'nav-sabado'  },
@@ -962,6 +1012,570 @@
 
     // Set first active on load
     setActive('nav-viernes');
+
+    // ── Lap Animation ─────────────────────────────────
+    const lapAnim = (function () {
+      const canvas = document.getElementById('lapCanvas');
+      if (!canvas) return { setMode() {} };
+      const ctx = canvas.getContext('2d');
+
+      const CW = 320, CH = 560;
+      canvas.width  = CW;
+      canvas.height = CH;
+
+      // Colors
+      const BG      = '#0a0a0a', TRACK   = '#1b1b1b', ZONE    = '#1e1e1e';
+      const BDR     = '#2d2d2d', YEL     = '#FFE600', GRN     = '#4caf50';
+      const RED     = '#ff5050', WHT     = '#ffffff', GRY     = '#555', GRY2 = '#888';
+      const STA_COL = '#252525';
+      const LANE_BG = '#272727';
+
+      // Layout
+      const T = { x: 16, y: 52, w: 288, h: 468, r: 32 };
+      const Z = { x: 68, y: 102, w: 178, h: 364 };
+
+      const LX   = T.x;
+      const RX   = T.x + T.w;
+      const IN_Y = T.y + T.h * 0.50;
+      const ST_Y = T.y + T.h * 0.80;
+
+      const LANE_W  = 22;
+      const LANE_X1 = Z.x + Z.w - LANE_W;
+      const LANE_X2 = Z.x + Z.w;
+      const LANE_CX = (LANE_X1 + LANE_X2) / 2;
+
+      const EXIT_Y  = Z.y + Z.h - 38;
+      const EXIT_H  = 30;
+      const EXIT_CY = EXIT_Y + EXIT_H / 2;
+
+      const STATION_NAMES = ['Ski Erg','Sled Push','Sled Pull','Brp. Jump','Rowing','Farmers Carry','Lunges','Wall Balls'];
+      const STA_H  = 27, STA_GAP = 7;
+      const STA_X  = Z.x + 6;
+      const STA_W  = LANE_X1 - STA_X - 6;
+
+      function staRect(i) {
+        const bot = Z.y + Z.h - 56;
+        return { x: STA_X, y: bot - i*(STA_H+STA_GAP) - STA_H, w: STA_W, h: STA_H };
+      }
+
+      const SKI_CY = staRect(0).y + STA_H / 2;
+      const SKI_CX = staRect(0).x + STA_W / 2;
+
+      // FINISH box — small yellow square just above Wall Balls
+      const WB_R      = staRect(7);
+      const FIN_W     = 42, FIN_H = 18;
+      const FIN_X     = STA_X + (STA_W - FIN_W) / 2;   // centered over station area
+      const FIN_Y     = WB_R.y - 5 - FIN_H;             // 4px gap above Wall Balls
+      const FIN_CX    = FIN_X + FIN_W / 2;
+      const FIN_CY    = FIN_Y + FIN_H / 2;
+
+      // Track path (clockwise)
+      const P = [
+        [LX,              ST_Y              ],
+        [LX,              T.y + T.r         ],
+        [T.x + T.r,       T.y               ],
+        [T.x + T.w - T.r, T.y               ],
+        [T.x + T.w,       T.y + T.r         ],
+        [T.x + T.w,       IN_Y              ],  // 5: IN arch
+        [T.x + T.w,       T.y + T.h - T.r   ],
+        [T.x + T.w - T.r, T.y + T.h         ],
+        [T.x + T.r,       T.y + T.h         ],
+        [LX,              T.y + T.h - T.r   ],
+        [LX,              ST_Y              ],
+      ];
+
+      const CD = [0];
+      for (let i = 1; i < P.length; i++) {
+        const dx = P[i][0]-P[i-1][0], dy = P[i][1]-P[i-1][1];
+        CD.push(CD[i-1] + Math.sqrt(dx*dx + dy*dy));
+      }
+      const TOTAL = CD[CD.length-1];
+      const IN_CD = CD[5];
+      const EXIT_DIST = IN_CD + ((EXIT_CY - IN_Y) / (T.y + T.h - T.r - IN_Y)) * (CD[6] - IN_CD);
+
+      function posAt(d) {
+        d = ((d % TOTAL) + TOTAL) % TOTAL;
+        for (let i = 1; i < P.length; i++) {
+          if (CD[i] >= d) {
+            const t = (d - CD[i-1]) / (CD[i] - CD[i-1]);
+            return [P[i-1][0] + t*(P[i][0]-P[i-1][0]),
+                    P[i-1][1] + t*(P[i][1]-P[i-1][1])];
+          }
+        }
+        return [...P[P.length-1]];
+      }
+
+      // Per-station enter keyframes
+      function makeKF(idx) {
+        const r   = staRect(idx);
+        const sCY = r.y + r.h / 2;
+        const sCX = r.x + r.w / 2;
+        const d1  = Math.abs(sCY - IN_Y);
+        const d2  = Math.abs(EXIT_CY - sCY);
+        const T1  = 20;
+        const T2  = T1 + Math.max(16, Math.min(55, Math.round(d1 * 0.43)));
+        const T3  = T2 + 22;
+        const T4  = T3 + 50;   // dwell end
+        const T5  = T4 + 22;
+        const T6  = T5 + Math.max(14, Math.min(60, Math.round(d2 * 0.38)));
+        const T7  = T6 + 20;
+        return { r, sCY, sCX, T1, T2, T3, T4, T5, T6, T7 };
+      }
+      const KF = Array.from({ length: 8 }, (_, i) => makeKF(i));
+
+      // FINISH animation timing (relative to KF[7])
+      const FIN_MOVE_DUR = 22;   // frames: Wall Balls box → FINISH box
+      const FIN_HOLD_DUR = 72;   // frames: hold at FINISH
+      const FIN_T_END    = KF[7].T4 + FIN_MOVE_DUR + FIN_HOLD_DUR;  // when done phase starts
+
+      // State
+      let mode       = 1;
+      let phase      = 'intro';
+      let dist       = 0, laps = 0;
+      let introT     = 0, flashT = 0, enterT = 0, doneT = 0, exitZT = 0;
+      let runT      = 0;
+      let trail      = [];
+      let raf        = null;
+      let stationIdx = 0;
+      let clock      = 0;
+
+      const TRAIL_LEN = 28;
+      const INTRO_DUR = 72;
+
+      function runSpeed() { return mode === 1 ? TOTAL / 200 : TOTAL / 120; }
+      function maxL()     { return mode === 1 ? 3 : 2; }
+
+      function reset() {
+        phase = 'intro'; dist = 0; laps = 0;
+        introT = 0; flashT = 0; enterT = 0; doneT = 0; exitZT = 0;
+        runT = 0;
+        clock = 0; trail = [];
+        stationIdx = mode === 1 ? 0 : 1;
+      }
+
+      function rrect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x+r, y);
+        ctx.lineTo(x+w-r, y);    ctx.arcTo(x+w, y,   x+w, y+r,   r);
+        ctx.lineTo(x+w, y+h-r);  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+        ctx.lineTo(x+r, y+h);    ctx.arcTo(x,   y+h, x,   y+h-r, r);
+        ctx.lineTo(x, y+r);      ctx.arcTo(x,   y,   x+r, y,     r);
+        ctx.closePath();
+      }
+      function lerp(a, b, t)  { return a + (b - a) * t; }
+      function easeIO(t)      { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+      // Draw static track + ROX Zone
+      function drawTrack() {
+        ctx.fillStyle = TRACK;
+        rrect(T.x, T.y, T.w, T.h, T.r); ctx.fill();
+        ctx.strokeStyle = BDR; ctx.lineWidth = 1; ctx.stroke();
+
+        ctx.fillStyle = ZONE;
+        ctx.fillRect(Z.x, Z.y, Z.w, Z.h);
+
+        // Dashed lane
+        ctx.fillStyle = LANE_BG;
+        ctx.fillRect(LANE_X1, Z.y, LANE_W, Z.h);
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 0.75;
+        ctx.beginPath(); ctx.moveTo(LANE_X1, Z.y); ctx.lineTo(LANE_X1, Z.y+Z.h); ctx.stroke();
+        ctx.strokeStyle = '#404040'; ctx.lineWidth = 1;
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath(); ctx.moveTo(LANE_CX, Z.y+4); ctx.lineTo(LANE_CX, Z.y+Z.h-4); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // ROX Zone border + EXIT gap
+        ctx.strokeStyle = BDR; ctx.lineWidth = 1;
+        ctx.strokeRect(Z.x, Z.y, Z.w, Z.h);
+        ctx.fillStyle = TRACK;
+        ctx.fillRect(Z.x+Z.w-1, EXIT_Y, 2, EXIT_H);
+
+        // Station boxes (0–7)
+        for (let i = 0; i < 8; i++) {
+          const r = staRect(i);
+          ctx.fillStyle = STA_COL;
+          ctx.fillRect(r.x, r.y, r.w, r.h);
+          ctx.strokeStyle = '#363636'; ctx.lineWidth = 0.75;
+          ctx.strokeRect(r.x+0.5, r.y+0.5, r.w-1, r.h-1);
+          ctx.fillStyle = '#5a5a5a';
+          ctx.font = '8px Inter,sans-serif';
+          ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.fillText(STATION_NAMES[i], r.x+5, r.y+r.h/2);
+        }
+
+        // ROX ZONE label (above FINISH box)
+        ctx.fillStyle = GRY2; ctx.font = 'bold 9px Inter,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('ROX ZONE', STA_X+STA_W/2, Z.y+4);
+
+        // FINISH box (yellow, above Wall Balls)
+        ctx.fillStyle = YEL;
+        ctx.fillRect(FIN_X, FIN_Y, FIN_W, FIN_H);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 9px Inter,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('FINISH', FIN_CX, FIN_CY);
+
+        // EXIT label
+        ctx.fillStyle = GRN; ctx.font = 'bold 8px Inter,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('EXIT', LANE_CX, EXIT_CY);
+        ctx.font = '10px sans-serif';
+        ctx.fillText('\u25b6', LANE_CX, EXIT_CY+10);
+
+        // Direction arrows (top →, bottom ←, left ↑ aligned with IN arch)
+        ctx.fillStyle = GRY; ctx.font = '13px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('\u2192', CW/2, T.y+16);
+        ctx.fillText('\u2190', CW/2, T.y+T.h-16);
+        ctx.fillText('\u2191', LX+14, IN_Y);
+      }
+
+      // Next-station pulsing outline (mode=2, run phase)
+      function drawNextStaPulse() {
+        if (mode !== 2 || stationIdx > 7) return;
+        const r = stationIdx === 7 ? { x: FIN_X, y: FIN_Y, w: FIN_W, h: FIN_H }
+                                   : staRect(stationIdx);
+        ctx.strokeStyle = YEL; ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.2 + 0.15 * Math.sin(clock * 0.12);
+        ctx.strokeRect(r.x, r.y, r.w, r.h);
+        ctx.globalAlpha = 1;
+      }
+
+      function drawINArch(lit) {
+        const col = lit ? WHT : YEL;
+        ctx.strokeStyle = col; ctx.lineWidth = lit ? 3 : 2;
+        ctx.beginPath(); ctx.moveTo(RX-1, IN_Y-20); ctx.lineTo(RX-1, IN_Y+20); ctx.stroke();
+        ctx.fillStyle = col;
+        ctx.font = 'bold ' + (lit ? 13 : 11) + 'px Inter,sans-serif';
+        ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        ctx.fillText('\u25c4 IN', RX-4, IN_Y);
+        ctx.globalAlpha = lit ? 0.7 : 0.35;
+        ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.moveTo(RX-20, IN_Y); ctx.lineTo(LANE_X2, IN_Y); ctx.stroke();
+        ctx.setLineDash([]); ctx.globalAlpha = 1;
+      }
+
+      function drawStart(alpha) {
+        ctx.globalAlpha = alpha ?? 1;
+        ctx.fillStyle = RED; ctx.font = 'bold 9px Inter,sans-serif';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText('START \u25b6', LX+4, ST_Y);
+        ctx.beginPath(); ctx.arc(LX+1, ST_Y, 3, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawIntroPulse() {
+        const t = introT, p = t / INTRO_DUR;
+        drawStart(Math.min(Math.max((t-20)/18, 0), 1));
+        ctx.globalAlpha = (1-p) * 0.5;
+        ctx.strokeStyle = YEL; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(LX+1, ST_Y, 7+14*p, 0, Math.PI*2); ctx.stroke();
+        ctx.globalAlpha = 1;
+        const pulse = 0.55 + 0.45 * Math.sin(t * 0.18);
+        ctx.shadowColor = YEL; ctx.shadowBlur = 18*pulse;
+        ctx.fillStyle = YEL;
+        ctx.beginPath(); ctx.arc(LX+1, ST_Y, 7, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      function drawRunner(x, y, glow) {
+        trail.push([x, y]);
+        if (trail.length > TRAIL_LEN) trail.shift();
+        for (let i = 0; i < trail.length-1; i++) {
+          ctx.globalAlpha = (i/trail.length) * 0.22;
+          ctx.fillStyle = glow === 'green' ? GRN : YEL;
+          ctx.beginPath(); ctx.arc(trail[i][0], trail[i][1], 3.5, 0, Math.PI*2); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        const col = glow === 'green' ? GRN : glow === 'flash' ? WHT : YEL;
+        ctx.shadowColor = col; ctx.shadowBlur = glow ? 20 : 10;
+        ctx.fillStyle = col;
+        ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      function drawCounter() {
+        const max = maxL(), cx = CW/2, cy = T.y-26, gap = 36;
+        const sx  = cx - (max-1)*gap/2;
+
+        ctx.fillStyle = GRY2; ctx.font = '9px Inter,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillText('veces que ves el arco IN', cx, cy-15);
+
+        for (let i = 0; i < max; i++) {
+          const px = sx + i*gap, filled = i < laps, last = filled && i === laps-1;
+          ctx.beginPath(); ctx.arc(px, cy, 11, 0, Math.PI*2);
+          if (filled) {
+            ctx.fillStyle = (last && phase === 'enter') ? GRN : YEL;
+            ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = last ? 14 : 0;
+          } else { ctx.fillStyle = '#1e1e1e'; }
+          ctx.fill(); ctx.shadowBlur = 0;
+          ctx.strokeStyle = filled ? 'transparent' : BDR; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillStyle = filled ? '#000' : GRY;
+          ctx.font = 'bold 10px Inter,sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(i+1, px, cy);
+        }
+
+        const sy = T.y + T.h + 24;
+        let msg = '', col = GRY2;
+
+        if (phase === 'intro') {
+          msg = mode === 1 ? 'Aqu\u00ed empieza el circuito \u2014 START'
+                           : 'Ski Erg completado \u2014 saliendo...';
+          col = mode === 2 ? GRN : GRY2;
+        } else if (phase === 'exit_zone') {
+          msg = 'Saliendo del ROX Zone...'; col = GRN;
+        } else if (phase === 'run') {
+          const next = stationIdx <= 7 ? STATION_NAMES[stationIdx] : '';
+          if (mode === 2) {
+            msg = laps === 0 ? 'Pr\u00f3ximo: ' + next : 'Vista 1 de 2 \u2014 \u00a1casi!';
+            col = laps > 0 ? YEL : GRY2;
+          } else {
+            msg = laps === 0 ? 'Corriendo... buscando el arco IN'
+                             : 'Vista ' + laps + ' de ' + max + ' \u2014 \u00a1sigue!';
+            col = laps > 0 ? YEL : GRY2;
+          }
+        } else if (phase === 'flash') {
+          msg = laps + '\u00aa vez \u2014 contin\u00faa el circuito'; col = YEL;
+        } else if (phase === 'enter') {
+          const isFinish = stationIdx === 7 && enterT >= KF[7].T4;
+          msg = isFinish ? '\u00a1FINISH!' : '\u00a1' + STATION_NAMES[stationIdx] + '!';
+          col = isFinish ? YEL : GRN;
+        } else if (phase === 'done') {
+          msg = mode === 1 ? '\u00a1KM 1 completado!'
+                           : '\u00a1Wall Balls! \u2014 \u00a1KM completado!';
+          col = GRN;
+        }
+
+        ctx.shadowColor = col;
+        ctx.shadowBlur = (phase==='enter'||phase==='done') ? 10 : 0;
+        ctx.fillStyle = col; ctx.font = '12px Inter,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(msg, cx, sy);
+        ctx.shadowBlur = 0;
+      }
+
+      // Unified enter animation — visits station idx, dwells, exits via lane.
+      // For idx=7 (Wall Balls), post-dwell goes directly to FINISH box instead.
+      function drawEnterStation(t, idx) {
+        const kf = KF[idx];
+        const { r, sCY, sCX, T1, T2, T3, T4, T5, T6, T7 } = kf;
+
+        // Wall Balls special path: after dwell, go straight to FINISH
+        if (idx === 7 && t >= T4) {
+          const TF  = T4 + FIN_MOVE_DUR;
+          let bx, by;
+          if (t < TF) {
+            const p = easeIO((t - T4) / FIN_MOVE_DUR);
+            bx = lerp(sCX, FIN_CX, p);
+            by = lerp(sCY, FIN_CY, p);
+          } else {
+            bx = FIN_CX; by = FIN_CY;
+            // Pulsing glow on FINISH box
+            const pulse = 0.5 + 0.5 * Math.sin((t - TF) * 0.15);
+            ctx.shadowColor = YEL; ctx.shadowBlur = 12 + 10 * pulse;
+            ctx.strokeStyle = YEL; ctx.lineWidth = 2;
+            ctx.strokeRect(FIN_X, FIN_Y, FIN_W, FIN_H);
+            ctx.shadowBlur = 0;
+            // Expanding ring
+            const ring = ((t - TF) % 50) / 50;
+            ctx.globalAlpha = (1 - ring) * 0.35;
+            ctx.strokeStyle = YEL; ctx.lineWidth = 1.5;
+            ctx.strokeRect(FIN_X - ring*8, FIN_Y - ring*6, FIN_W + ring*16, FIN_H + ring*12);
+            ctx.globalAlpha = 1;
+          }
+          // Faint residual glow on Wall Balls during move
+          if (t < T4 + FIN_MOVE_DUR) {
+            const fade = 1 - (t - T4) / FIN_MOVE_DUR;
+            ctx.strokeStyle = GRN; ctx.lineWidth = 1;
+            ctx.globalAlpha = fade * 0.4;
+            ctx.strokeRect(r.x, r.y, r.w, r.h);
+            ctx.globalAlpha = 1;
+          }
+          drawRunner(bx, by, t < TF ? 'green' : false);
+          drawStart(0.35);
+          return;
+        }
+
+        // Normal path
+        let bx, by;
+        if (t < T1) {
+          bx = lerp(RX, LANE_CX, easeIO(t/T1)); by = IN_Y;
+        } else if (t < T2) {
+          bx = LANE_CX; by = lerp(IN_Y, sCY, easeIO((t-T1)/(T2-T1)));
+        } else if (t < T3) {
+          bx = lerp(LANE_CX, sCX, easeIO((t-T2)/(T3-T2))); by = sCY;
+        } else if (t < T4) {
+          bx = sCX; by = sCY;
+          const pulse = 0.5 + 0.5 * Math.sin((t-T3)*0.18);
+          ctx.strokeStyle = GRN; ctx.lineWidth = 1.5;
+          ctx.shadowColor = GRN; ctx.shadowBlur = 8 + 8*pulse;
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#7adf7a';
+          ctx.font = '8px Inter,sans-serif';
+          ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.fillText(STATION_NAMES[idx], r.x+5, r.y+r.h/2);
+        } else if (t < T5) {
+          bx = lerp(sCX, LANE_CX, easeIO((t-T4)/(T5-T4))); by = sCY;
+        } else if (t < T6) {
+          bx = LANE_CX; by = lerp(sCY, EXIT_CY, easeIO((t-T5)/(T6-T5)));
+        } else {
+          bx = lerp(LANE_CX, RX, easeIO(Math.min((t-T6)/(T7-T6), 1))); by = EXIT_CY;
+        }
+
+        // Subtle box outline during approach
+        if (t >= T1 && t < T3) {
+          ctx.strokeStyle = GRN; ctx.lineWidth = 1;
+          ctx.globalAlpha = Math.min((t-T1)/16, 0.5);
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+          ctx.globalAlpha = 1;
+        }
+
+        // ENTRA! label
+        if (t < T1 * 1.5) {
+          const a = t < T1*0.55 ? t/(T1*0.55) : (T1*1.5-t)/(T1*0.95);
+          ctx.globalAlpha = Math.max(0, Math.min(1, a));
+          ctx.shadowColor = GRN; ctx.shadowBlur = 12;
+          ctx.fillStyle = GRN; ctx.font = 'bold 14px Inter,sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+          ctx.fillText('\u00a1ENTRA!', LANE_CX, IN_Y-14);
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        }
+
+        drawRunner(bx, by, 'green');
+        drawStart(0.35);
+      }
+
+      // Mode=2 initial exit: ball travels from Ski Erg level down lane and out
+      const IEX_T0 = 14, IEX_T1 = IEX_T0 + 18, IEX_T2 = IEX_T1 + 14;
+
+      function drawInitExit(t) {
+        let bx, by;
+        if (t < IEX_T0) {
+          bx = lerp(SKI_CX, LANE_CX, easeIO(t/IEX_T0)); by = SKI_CY;
+        } else if (t < IEX_T1) {
+          bx = LANE_CX; by = lerp(SKI_CY, EXIT_CY, easeIO((t-IEX_T0)/(IEX_T1-IEX_T0)));
+        } else {
+          bx = lerp(LANE_CX, RX, easeIO(Math.min((t-IEX_T1)/(IEX_T2-IEX_T1), 1)));
+          by = EXIT_CY;
+        }
+        drawRunner(bx, by, 'green');
+        drawStart(0.35);
+      }
+
+      // Render loop
+      function frame() {
+        ctx.fillStyle = BG; ctx.fillRect(0, 0, CW, CH);
+        drawTrack();
+        drawINArch(phase === 'flash' || phase === 'enter');
+        clock++;
+
+        if (phase === 'intro') {
+          introT++;
+          if (mode === 1) {
+            drawIntroPulse();
+            if (introT >= INTRO_DUR) { phase = 'run'; dist = 0; trail = []; runT = 0; }
+          } else {
+            drawRunner(SKI_CX, SKI_CY, 'green');
+            drawStart(0.35);
+            if (introT >= 40) { phase = 'exit_zone'; exitZT = 0; trail = []; }
+          }
+
+        } else if (phase === 'exit_zone') {
+          exitZT++;
+          drawInitExit(exitZT);
+          if (exitZT >= IEX_T2 + 4) { phase = 'run'; dist = EXIT_DIST; laps = 0; trail = []; runT = 0; }
+
+        } else if (phase === 'run') {
+          const warmup = (laps === 0) ? Math.min(runT / 32, 1) : 1;
+          const speed  = runSpeed() * (0.04 + 0.96 * warmup * warmup);
+          runT++;
+          const prev   = dist;
+          dist += speed;
+
+          if (prev < IN_CD && dist >= IN_CD) {
+            laps++;
+            if (laps >= maxL()) {
+              dist = IN_CD; phase = 'enter'; enterT = 0; trail = [];
+            } else {
+              phase = 'flash'; flashT = 44;
+            }
+          }
+
+          if (dist >= TOTAL) dist -= TOTAL;
+
+          if (phase === 'run') {
+            const [x, y] = posAt(dist);
+            drawRunner(x, y, false);
+            drawNextStaPulse();
+          }
+          drawStart(0.35);
+
+        } else if (phase === 'flash') {
+          flashT--;
+          drawRunner(RX, IN_Y, 'flash');
+          drawStart(0.35);
+          if (flashT <= 0) phase = 'run';
+
+        } else if (phase === 'enter') {
+          enterT++;
+          drawEnterStation(enterT, stationIdx);
+          // Determine when this station's enter animation ends
+          const enterEnd = (stationIdx === 7) ? FIN_T_END + 8 : KF[stationIdx].T7 + 8;
+          if (enterT > enterEnd) {
+            if (mode === 2 && stationIdx < 7) {
+              stationIdx++;
+              phase = 'run'; dist = EXIT_DIST; laps = 0; trail = []; runT = 0;
+            } else {
+              phase = 'done'; doneT = 0;
+            }
+          }
+
+        } else if (phase === 'done') {
+          doneT++;
+          // Hold ball at FINISH (mode=2) or EXIT (mode=1)
+          if (mode === 2) {
+            // Gentle pulse on FINISH box
+            const pulse = 0.4 + 0.3 * Math.sin(doneT * 0.1);
+            ctx.shadowColor = YEL; ctx.shadowBlur = 8 + 6*pulse;
+            ctx.strokeStyle = YEL; ctx.lineWidth = 1.5;
+            ctx.strokeRect(FIN_X, FIN_Y, FIN_W, FIN_H);
+            ctx.shadowBlur = 0;
+            drawRunner(FIN_CX, FIN_CY, false);
+          } else {
+            drawRunner(RX, EXIT_CY, 'green');
+          }
+          drawStart(0.35);
+          if (doneT > 90) reset();
+        }
+
+        drawCounter();
+        raf = requestAnimationFrame(frame);
+      }
+
+      function start() {
+        if (raf) cancelAnimationFrame(raf);
+        reset();
+        raf = requestAnimationFrame(frame);
+      }
+
+      new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) start();
+        else if (raf) { cancelAnimationFrame(raf); raf = null; }
+      }).observe(canvas);
+
+      return {
+        setMode(m) {
+          mode = m;
+          document.getElementById('lapTab1').classList.toggle('active', m === 1);
+          document.getElementById('lapTab2').classList.toggle('active', m === 2);
+          start();
+        }
+      };
+    })();
   </script>
 
 </body>
