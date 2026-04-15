@@ -591,6 +591,44 @@
       margin-top: 12px;
       border: 1px solid var(--border);
       display: block;
+      cursor: zoom-in;
+    }
+
+    /* ── IMAGE LIGHTBOX ───────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* ── LAP ANIMATION ───────────────────────────── */
@@ -905,6 +943,7 @@
           alt="Mapa de Carrera HYROX Monterrey Cintermex"
           class="race-map"
           loading="lazy"
+          onclick="openLightbox(this)"
         >
         <img
           src="lap-instructions.png"
@@ -912,6 +951,7 @@
           class="race-map"
           loading="lazy"
           style="margin-top: 8px;"
+          onclick="openLightbox(this)"
         >
       </div>
 
@@ -989,6 +1029,12 @@
 
   </main>
 
+  <!-- ─── IMAGE LIGHTBOX ────────────────────────────── -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Cerrar">✕</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
   <!-- ─── BOTTOM NAV ──────────────────────────────── -->
   <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
     <a href="#viernes" class="nav-tab" id="nav-viernes">
@@ -1006,6 +1052,21 @@
   </nav>
 
   <script>
+    // ── Image lightbox ───────────────────────────────
+    function openLightbox(img) {
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox-img').alt = img.alt;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
     // ── Active nav highlight on scroll ──────────────
     const sections = [
       { id: 'viernes', nav: 'nav-viernes' },
