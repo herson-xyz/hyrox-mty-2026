@@ -390,6 +390,58 @@
       color: var(--yellow);
     }
 
+    /* ── WAVE CARDS ──────────────────────────────────── */
+    .wave-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+    .wave-row:last-child { margin-bottom: 0; }
+
+    .wave-avatars {
+      display: flex;
+      flex-shrink: 0;
+    }
+    .wave-avatars .athlete-avatar {
+      width: 34px; height: 34px;
+      font-size: 13px;
+    }
+    .wave-avatars .athlete-avatar:last-child {
+      margin-left: -8px;
+      border: 2px solid var(--card);
+    }
+
+    .wave-info { flex: 1; }
+    .wave-names {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .wave-meta {
+      font-size: 11px;
+      color: var(--gray-2);
+      margin-top: 3px;
+      display: flex;
+      gap: 8px;
+    }
+    .wave-meta span {
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    .wave-time {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--yellow);
+      white-space: nowrap;
+    }
+
     /* ── FLOW TIMELINE ───────────────────────────────── */
     .flow { display: flex; flex-direction: column; }
 
@@ -926,6 +978,59 @@
         <div class="banner yellow">
           <span class="banner-icon">📌</span>
           Trae tu ID y el QR del ticket. No se puede hacer check-in a nombre de otro atleta.
+        </div>
+      </div>
+
+      <!-- Olas de Salida -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-icon">🏁</span>
+          <span class="card-title">Olas de Salida · Doubles Mixed</span>
+        </div>
+
+        <div class="wave-row">
+          <div class="wave-avatars">
+            <div class="athlete-avatar">E</div>
+            <div class="athlete-avatar">S</div>
+          </div>
+          <div class="wave-info">
+            <div class="wave-names">Erich &amp; Sophia</div>
+            <div class="wave-meta">
+              <span>Bib 175028</span>
+              <span>25–29</span>
+            </div>
+          </div>
+          <div class="wave-time">5:50 PM</div>
+        </div>
+
+        <div class="wave-row">
+          <div class="wave-avatars">
+            <div class="athlete-avatar">H</div>
+            <div class="athlete-avatar">X</div>
+          </div>
+          <div class="wave-info">
+            <div class="wave-names">Herson &amp; Ximena</div>
+            <div class="wave-meta">
+              <span>Bib 181015</span>
+              <span>30–34</span>
+            </div>
+          </div>
+          <div class="wave-time">6:10 PM</div>
+        </div>
+
+        <div class="wave-row">
+          <div class="wave-avatars">
+            <div class="athlete-avatar">M</div>
+            <div class="athlete-avatar">R</div>
+          </div>
+          <div class="wave-info">
+            <div class="wave-names">Monse &amp; Ryan</div>
+            <div class="wave-meta">
+              <span>Bib 184015</span>
+              <span>16–24</span>
+            </div>
+          </div>
+          <div class="wave-time">6:40 PM</div>
         </div>
       </div>
 
